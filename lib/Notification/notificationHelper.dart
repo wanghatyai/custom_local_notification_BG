@@ -20,12 +20,23 @@ class NotificationHelper {
   }
 
   initializedNotification() async {
-    androidInitializationSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
+    /*androidInitializationSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
     iosInitializationSettings = IOSInitializationSettings(
       onDidReceiveLocalNotification: onDidReceiveLocalNotification,
     );
     initializationSettings = InitializationSettings(androidInitializationSettings, iosInitializationSettings);
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings);*/
+    var initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
+    var initializationSettingsIOS = IOSInitializationSettings(
+        onDidReceiveLocalNotification: onDidReceiveLocalNotification
+    );
+    var initializationSettings = InitializationSettings(
+        android: initializationSettingsAndroid,
+        iOS: initializationSettingsIOS);
     await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+    /*flutterLocalNotificationsPlugin.initialize(
+        initializationSettings,
+        onSelectNotification: onSelectNotification);*/
   }
 
   Future onDidReceiveLocalNotification(int id, String title, String body, String payLoad) async {
@@ -64,16 +75,20 @@ class NotificationHelper {
       'channel_Id',
       'Channel Name',
       'Channel Description',
-      importance: Importance.Max,
-      priority: Priority.High,
+      importance: Importance.max,
+      priority: Priority.high,
       enableVibration: true,
       enableLights: true,
       ticker: 'test ticker',
       playSound: true,
     );
 
-    IOSNotificationDetails iosNotificationDetails = IOSNotificationDetails();
-    NotificationDetails notificationDetails = NotificationDetails(androidNotificationDetails, iosNotificationDetails);
+    //IOSNotificationDetails iosNotificationDetails = IOSNotificationDetails();
+    //NotificationDetails notificationDetails = NotificationDetails(androidNotificationDetails, iosNotificationDetails);
+
+    var iOSPlatformChannelSpecifics = IOSNotificationDetails();
+    NotificationDetails platformChannelSpecifics = NotificationDetails(
+        android: androidNotificationDetails);
 
     /*if (DateTime.parse(a).millisecondsSinceEpoch > currentTime.millisecondsSinceEpoch) {
       print("current Time is less than startTime so  , Cannot play notification");
@@ -96,7 +111,7 @@ class NotificationHelper {
         0,
         "แจ้งเตือนรับประทานยา!",
         "ถึงเวลากินยาแล้วค่ะ",
-        notificationDetails);
+        platformChannelSpecifics);
 
     /*if (currentTime.millisecondsSinceEpoch > DateTime.parse(b).millisecondsSinceEpoch) {
       print("current time is greater than end time so, cannto play notification");
